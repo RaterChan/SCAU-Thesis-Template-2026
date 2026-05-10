@@ -1,0 +1,700 @@
+% !TEX program = latexmk
+% !TEX options = -xelatex -synctex=1 -interaction=nonstopmode -file-line-error "%DOC%"
+
+%除非报错，请勿删去顶上两行注释，否则你要手动编译多次
+
+% ***************************** 本项目的Github地址 *****************************
+% https://github.com/RaterChan/SCAU-Thesis-Template-2026
+
+\documentclass[a4paper, 12pt, oneside]{article}
+
+
+\usepackage[UTF8]{ctex}
+\xeCJKsetup{AutoFakeBold=true}
+
+\setmainfont{Times New Roman}
+
+%非必要不要改下面这行设置，这是我拿尺子一点一点量出来，微调出来的，上下左右边距都是合适的，除了页码距离（满排）行底字符的下边距和距离页面底边的距离没有调好之外（太难调了），其它都是对的，一般人不会注意这个，只要上下左右边距对了即可。注意Word的行距和这个参数不一样，别乱修改这里的参数！
+\usepackage[a4paper, top=2.55cm, bottom=2.75cm, left=2.4cm, right=2.4cm, bindingoffset=0.5cm, headheight=15pt, headsep=0.37cm, footskip=0.85cm]{geometry}
+
+
+\usepackage{setspace}
+%非必要不修改下面的1.70这个数值，我也是用尺子量的行距，1.70相当于word的1.50倍行距，非必要不修改！
+\setstretch{1.70}
+
+%以下引用的包最好也别修改，用不上也引着，不碍事
+\usepackage{amsmath}
+\allowdisplaybreaks[4]
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{newtxmath}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{caption}
+\usepackage{subcaption}
+
+% ================= 图、表、公式编号与样式自动化（非必要不修改） =================
+% 规范：公式编号如“(式1)”，写在右边行末。
+\makeatletter
+\def\tagform@#1{\maketag@@@{(式#1\unskip\@@italiccorr)}}
+\makeatother
+\renewcommand{\theequation}{\arabic{equation}} % 内部编号恢复纯数字，防交叉引用套娃
+
+% 表格采用三线表，上下线用1.5磅粗线，中间线用1磅细线
+\setlength{\heavyrulewidth}{1.5pt}
+\setlength{\lightrulewidth}{1pt}
+
+% 定义图表标题字体为宋体五号
+\DeclareCaptionFont{wuhao}{\zihao{5}\songti}
+
+% 图号/表号后空1个字距写图题/表题
+\DeclareCaptionLabelFormat{myfig}{图#2}
+\DeclareCaptionLabelFormat{mytab}{表#2}
+
+% 图题放图下方居中，图表上下各空一行(通过skip调整)
+\captionsetup[figure]{labelformat=myfig, labelsep=quad, font=wuhao, position=bottom, skip=1.5ex}
+
+% 表题放表格上方居中
+\captionsetup[table]{labelformat=mytab, labelsep=quad, font=wuhao, position=top, skip=1.5ex}
+
+% 图中若有分图时，分图号用“(a)”“(b)”置于分图之下
+\captionsetup[subfigure]{labelformat=simple, labelsep=space, font=wuhao}
+\renewcommand\thesubfigure{(\alph{subfigure})}
+
+% ================= 标题格式与目录 =================
+\usepackage{titlesec}
+\usepackage{tocloft}
+
+% 标题阿拉伯数字连续编号后空一个字距，无空行
+% 一级标题：黑体四号字，左顶格
+\titleformat{\section}{\zihao{4}\heiti}{\thesection\quad}{0pt}{}
+\titlespacing*{\section}{0pt}{*1.5}{*1.5} % 使用相对单位替代 0pt，恢复正常行距缓冲
+
+% 二级标题：黑体小四号字，左顶格
+\titleformat{\subsection}{\zihao{-4}\heiti}{\thesubsection\quad}{0pt}{}
+\titlespacing*{\subsection}{0pt}{*1.2}{*1.2}
+
+% 三级标题：楷体小四号字，左顶格
+\titleformat{\subsubsection}{\zihao{-4}\kaishu}{\thesubsubsection\quad}{0pt}{}
+\titlespacing*{\subsubsection}{0pt}{*1}{*1}
+
+% 四级标题：楷体小四号字，左顶格
+\titleformat{\paragraph}{\zihao{-4}\kaishu}{\theparagraph\quad}{0pt}{}
+\titlespacing*{\paragraph}{0pt}{*1}{*1}
+
+% 目录两字居中，空4个字距，黑体四号；显示三级标题，内容宋体小四
+\setcounter{tocdepth}{3}
+\renewcommand{\cfttoctitlefont}{\hfill\zihao{4}\heiti}
+\renewcommand{\cftaftertoctitle}{\hfill}
+\renewcommand{\contentsname}{目\hspace{4em}录}
+\renewcommand{\cftsecfont}{\zihao{-4}\songti}
+\renewcommand{\cftsecpagefont}{\zihao{-4}\songti}
+\renewcommand{\cftsubsecfont}{\zihao{-4}\songti}
+\renewcommand{\cftsubsecpagefont}{\zihao{-4}\songti}
+\renewcommand{\cftsubsubsecfont}{\zihao{-4}\songti}
+\renewcommand{\cftsubsubsecpagefont}{\zihao{-4}\songti}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+
+% 层次标题序号一律左对齐
+\setlength{\cftsecindent}{0pt}
+\setlength{\cftsubsecindent}{0pt}
+\setlength{\cftsubsubsecindent}{0pt}
+
+% 统一目录行距
+\setlength{\cftbeforesecskip}{0pt plus 5pt}
+\setlength{\cftbeforesubsecskip}{0pt plus 3pt}
+\setlength{\cftbeforesubsubsecskip}{0pt plus 3pt}
+
+% 调整编号宽度，防止左对齐后长编号（如 1.1.1）与后续汉字粘连
+\setlength{\cftsecnumwidth}{1.5em}
+\setlength{\cftsubsecnumwidth}{2.2em}
+\setlength{\cftsubsubsecnumwidth}{3.0em}
+
+% ================= 页眉页脚与脚注设定 =================
+\usepackage{fancyhdr}
+% 全部不加页眉。页码数字两侧不加修饰线，位于页脚居中，五号字。
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \renewcommand{\headrulewidth}{0pt}
+  \fancyfoot[C]{\zihao{5}\thepage}
+}
+\pagestyle{plain}
+
+% 脚注右上标连续编号，宋体小五号字
+\renewcommand{\footnotesize}{\zihao{-5}\songti}
+
+\usepackage[hidelinks]{hyperref} % 提供目录及交叉引用跳转
+
+% ================= 引用工具 cleveref (必须放最后) =================
+\usepackage{cleveref}
+
+% 汉化并消除英式空格（#2和#3是超链接锚点，#1是数字）
+\crefformat{figure}{#2图#1#3}
+\crefformat{table}{#2表#1#3}
+\crefformat{equation}{#2式#1#3}
+\crefformat{theorem}{#2定理#1#3}
+\crefformat{lemma}{#2引理#1#3}
+\crefformat{remark}{#2注解#1#3}
+\crefformat{section}{#2第#1节#3}
+
+% 汉化多重引用时的连词（比如同时引用两个图，三个公式）
+\newcommand{\crefpairconjunction}{~和~}
+\newcommand{\crefmiddleconjunction}{、}
+\newcommand{\creflastconjunction}{~和~}
+
+% ================= 定理、引理与注解环境定制 =================
+
+% 自定义一个适合中文排版的定理样式 "cn_theorem"
+\newtheoremstyle{cn_theorem}
+  {0pt}           % 段前间距：0pt
+  {0pt}           % 段后间距：0pt
+  {\normalfont}   % 正文字体：强制使用正常字体（宋体，绝不倾斜）
+  {2\ccwd}        % 缩进：首行自动缩进两个中文字符
+  {\heiti}        % 表头字体：让“定理”、“引理”显示为黑体
+  {}              % 表头后的标点：留空
+  {\ccwd}         % 表头与正文之间的空格：空一个中文字符
+  {}              % 表头自定义格式：使用默认
+
+% 激活并应用上述样式
+\theoremstyle{cn_theorem}
+
+% 全部独立计数，全挂载在 section 之下
+\newtheorem{theorem}{定理}[section]
+\newtheorem{lemma}{引理}[section]   % 不再共享 theorem 的计数器，独立使用自己的
+\newtheorem{remark}{注解}[section]  % 注解也独立
+
+% 将默认的证明环境英文 "Proof" 替换为中文黑体的 "证明"
+\renewcommand{\proofname}{\heiti 证明}
+
+% ================= 附录 =================
+\newcommand{\startappendix}{
+    \setcounter{section}{0}
+    \renewcommand{\thesection}{附录\Alph{section}} 
+    \renewcommand{\thefigure}{\Alph{section}\arabic{figure}}
+    \renewcommand{\thetable}{\Alph{section}\arabic{table}}
+    \renewcommand{\theequation}{式\Alph{section}\arabic{equation}}
+    
+    \renewcommand{\theHsection}{\Alph{section}}
+    \renewcommand{\theHfigure}{\Alph{section}\arabic{figure}}
+    \renewcommand{\theHtable}{\Alph{section}\arabic{table}}
+    \renewcommand{\theHequation}{\Alph{section}\arabic{equation}}
+    
+    \setcounter{figure}{0}
+    \setcounter{table}{0}
+    \setcounter{equation}{0}
+
+    \titleformat{\section}{\zihao{4}\heiti\centering}{\thesection\quad}{0pt}{}
+    \addtocontents{toc}{\protect\setlength{\cftsecnumwidth}{4.5em}}
+}
+
+% ************************ 导言区结束，文档开始 ************************ 
+
+\begin{document}
+\pagenumbering{alph}
+
+% 正文基础字体设定为宋体小四，首行缩进两字距
+\zihao{-4}\songti
+\setlength{\parindent}{2em}
+
+% --------------------封面--------------------
+\clearpage
+\thispagestyle{empty} 
+\vfill 
+\begin{center}
+    \includegraphics[width=0.8\textwidth]{SCAU-LOGO.jpg} 
+\end{center}
+\vfill 
+\begin{center}
+    {\zihao{-0} \songti \textbf{本科毕业论文}} %宋体是没有粗体的，这个到最后答辩前手动用Acrobat或者WPS加粗这几个字即可
+\end{center}
+\vfill 
+\begin{center}
+    {\zihao{2} \heiti \textbf{论文题目论文题目论文题目论文题目论文题目论文题目论文题目}}
+\end{center}
+\vfill
+\vfill
+\vfill 
+\begin{center}
+    \zihao{-3} \songti 
+    \renewcommand{\arraystretch}{1.3} 
+    \begin{tabular}{ll}
+        \makebox[4em][s]{学\hfill 院}： & \underline{\makebox[9.5cm]{学院名称}} \\
+        \makebox[4em][s]{专\hfill 业}： & \underline{\makebox[9.5cm]{专业名称}} \\
+        \makebox[4em][s]{姓\hfill 名}： & \underline{\makebox[9.5cm]{姓名}} \\
+        \makebox[4em][s]{学\hfill 号}： & \underline{\makebox[9.5cm]{202299999999}} \\
+        \makebox[4em][s]{指导教师}： & \underline{\makebox[3.8cm]{教师名称}}\makebox[1.9cm][c]{职称}\underline{\makebox[3.8cm]{职称}} \\
+        \makebox[4em][s]{提交日期}： & \underline{\makebox[2.2cm]{\the\year}}\makebox[0.9cm][c]{年}\underline{\makebox[2.2cm]{\the\month}}\makebox[0.9cm][c]{月}\underline{\makebox[2.2cm]{\the\day}}\makebox[1.1cm][r]{日} \\
+    \end{tabular}
+\end{center}
+
+\vspace{3em} 
+\clearpage
+
+% --------------------原创性声明及授权声明--------------------
+\clearpage
+\thispagestyle{empty}
+\vspace{2em}
+\begin{center}
+    {\zihao{4}\heiti 华南农业大学本科毕业论文（设计）原创性声明}
+\end{center}
+
+本人郑重声明：所呈交的毕业论文（设计），是本人在导师的指导下，独立进行研究工作所取得的成果。除文中已经注明引用的内容外，本论文不包含任何其他个人或集体已经发表或撰写过的作品成果。对本文的研究做出重要贡献的个人和集体，均已在文中以明确方式标明。本人完全意识到本声明的法律结果由本人承担。
+\vspace{3em}
+\begin{center}
+    \begin{tabular}{p{0.45\textwidth} p{0.45\textwidth}}
+        作者签名：\raisebox{-0.4\height} & 日期：\the\year\ 年 \the\month\ 月 \the\day\ 日 \\
+    \end{tabular}
+\end{center}
+
+\vspace{5em}
+\begin{center}
+    {\zihao{4}\heiti 华南农业大学本科毕业论文（设计）使用授权声明}
+\end{center}
+
+本人完全了解学校有关保留、使用毕业论文（设计）的规定，同意学校保留并向国家有关部门或机构送交毕业论文（设计）的复印件和电子版，允许毕业论文（设计）被查阅和借阅。学校可以将本毕业论文（设计）的全部或部分内容编入有关数据库进行检索，可以采用影印、缩印或扫描等复制手段保存和汇编毕业论文（设计）。
+\vspace{3em}
+\begin{center}
+    \begin{tabular}{p{0.45\textwidth} p{0.45\textwidth}}
+        作者签名：\raisebox{-0.4\height} & 指导教师签名：\\[1.5em] 
+        日期：\the\year\ 年 \the\month\ 月 \the\day\ 日 & 日期：\the\year\ 年 \the\month\ 月 \the\day\ 日 \\
+    \end{tabular}
+\end{center}
+
+% --------------------中文摘要-------------------
+\clearpage 
+\pagenumbering{Roman}
+\setcounter{page}{1}
+\centerline{\zihao{4}\heiti 摘\hspace{4em}要}
+\vspace{0.5em}
+摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容
+
+摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容
+
+摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容
+
+摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容摘要内容
+
+\noindent{\zihao{-4}\heiti 关键词：} 关键词1；关键词2；关键词3；关键词4；关键词5
+    
+% --------------------英文摘要-------------------
+\clearpage
+\begin{center}
+    {\zihao{4}\textbf{Title Title Title Title Title Title Title Title Title Title Title Title Title}} 
+    
+    {\zihao{-4} Surname forename}
+    
+    {\zihao{-4} (College of *******, South China Agricultural University, Guangzhou, 510642, China)}
+\end{center}
+\vspace{-0.89em}
+\noindent{\zihao{-4}\textbf{Abstract:} 
+abstract content abstract content abstract content abstract content abstract content abstract content abstract content 
+
+abstract content abstract content abstract content abstract content abstract content abstract content abstract content abstract content abstract content abstract content 
+
+abstract content abstract content abstract content abstract content abstract content abstract content abstract content 
+
+abstract content abstract content abstract content abstract content abstract content abstract content abstract content abstract content abstract content abstract content abstract content 
+
+abstract content abstract content abstract content abstract content abstract content abstract content abstract content abstract content 
+}
+
+\noindent{\zihao{-4}\textbf{Key words:} Keyword1; Keyword2; Keyword3; Keyword4; Keyword5}
+
+% --------------------符号表-------------------
+\clearpage
+\centerline{\zihao{4}\heiti 英文缩略词（符号表）}
+\begin{center}
+    \zihao{-4}
+    \begin{tabularx}{\textwidth}{c >{\centering\arraybackslash}X >{\centering\arraybackslash}X}
+        \toprule
+        英文缩写 & 英文全称 & 中文全称 \\
+        \midrule
+        $\mathbb{R}^n$ & $n$-dimensional Euclidean vector space & $n$维欧几里得向量空间 \\
+        $\mathbb{R}^{n \times m}$ & $n \times m$ real matrix space & $n \times m$维实矩阵空间 \\
+        $\mathbb{S}_{n}^{+}$ & Set of symmetric positive definite matrices & 对称正定矩阵集合 \\
+        $P > 0 \ (P \ge 0)$ & Symmetric positive (semi-positive) definite matrix & 矩阵$P$是对称且正定（半正定）的 \\
+        $\mathrm{diag}\{\dots\}$ & Diagonal matrix & 对角矩阵 \\
+        $\mathrm{sym}(A)$ & Sum of matrix $A$ and its transpose & 矩阵$A$与其转置之和，即 $A + A^T$ \\
+        \bottomrule
+    \end{tabularx}
+\end{center}
+
+% --------------------目录--------------------
+\clearpage
+\tableofcontents 
+
+% --------------------正文--------------------
+\clearpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\section{章节名称，如绪论}
+章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容
+
+\subsection{小节名称，如研究背景与意义}
+小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容
+
+小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容
+
+小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容
+
+\subsection{小节名称}
+
+\subsubsection{小小节1}
+小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容
+
+小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容
+
+小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容
+
+\subsubsection{小小节2}
+小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容
+
+小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容
+
+小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容
+
+\subsection{小小节3}
+小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容
+
+小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容
+
+小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容小小节内容
+
+\section{章节名称}
+\subsection{小节1}
+小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容
+
+小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容
+
+小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容
+
+\subsection{小节2}
+小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容
+
+小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容
+
+小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容
+
+\subsection{小节3}
+小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容
+
+\begin{lemma}[引理名称] \label{引理交叉引用名字}
+引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述
+
+引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述
+
+引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述
+\begin{equation}
+    \min_{\left\{\alpha_i \mid \alpha_i > 0, \sum_i \alpha_i = 1\right\}} \sum_i \frac{1}{\alpha_i} f_i(t) = \sum_i f_i(t) + \max_{g_{ij}(t)} \sum_{i \neq j} g_{ij}(t),
+\end{equation}
+约束条件为
+\begin{equation*}
+    \left\{ g_{ij}: \mathbb{R}^m \to \mathbb{R}, g_{ji} \triangleq g_{ij}, \begin{bmatrix} f_i(t) & g_{ij}(t) \\ g_{ji}(t) & f_j(t) \end{bmatrix} \ge 0 \right\}.
+\end{equation*}
+\end{lemma}
+
+\section{章节名称}
+
+\subsection{小节0}
+小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容
+
+小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容
+
+小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容小节内容
+
+\subsection{小节1}
+\begin{lemma} \label{引理交叉引用名字}
+引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述引理叙述
+
+其中
+\begin{gather*}
+    F_i = i(u) \phi(u) w \quad q_i = p_3(u) w(u) du.
+\end{gather*}
+\end{lemma}
+
+\textbf{\heiti 证明.} 证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容
+
+证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容
+
+证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容
+
+证明完毕。
+
+\subsection{小节2}
+
+\begin{lemma} \label{公式交叉引用名字}
+有如下不等式：
+
+其中
+
+\end{lemma}
+
+\textbf{\heiti 证明.} 证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容
+
+证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容
+
+证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容
+
+证明完毕。
+
+\subsection{小节3}
+又有如下引理。
+
+\begin{lemma}[引理名字] \label{交叉引用名字}
+引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容
+
+引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容
+
+引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容引理内容
+
+
+
+\end{lemma}
+
+\begin{remark}
+    注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容
+
+    注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容
+
+    注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容注解内容
+\end{remark}
+
+\begin{lemma}[引理名字]
+该引理有如下不等式：
+
+\end{lemma}
+
+\section{章节名称}
+章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容
+
+章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容
+
+章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容章节内容
+
+\subsection{小节1}
+小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1
+
+小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1
+
+小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1
+
+\begin{theorem} \label{main_theorem}
+定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述
+
+定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述定理叙述
+
+\begin{equation*}
+    \Phi + \Theta_1 < 0
+\end{equation*}
+
+\end{theorem}
+
+\subsection{小节2}
+小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2
+
+小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2
+
+小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2
+
+\textbf{\heiti 证明.} 证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容
+
+证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容
+
+证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容证明内容
+
+
+\begin{remark}
+注解环境内容注解环境内容注解环境内容注解环境内容注解环境内容注解环境内容注解环境内容注解环境内容注解环境内容注解环境内容注解环境内容注解环境内容
+
+注解环境内容注解环境内容注解环境内容注解环境内容注解环境内容注解环境内容注解环境内容注解环境内容注解环境内容注解环境内容注解环境内容注解环境内容
+
+注解环境内容注解环境内容注解环境内容注解环境内容注解环境内容注解环境内容注解环境内容注解环境内容注解环境内容注解环境内容注解环境内容注解环境内容
+\end{remark}
+
+\section{章节名称}
+
+章节文字章节文字章节文字章节文字章节文字章节文字章节文字章节文字章节文字章节文字章节文字章节文字章节文字章节文字章节文字章节文字章节文字章节文字
+
+章节文字章节文字章节文字章节文字章节文字章节文字章节文字章节文字章节文字章节文字章节文字章节文字章节文字章节文字章节文字章节文字章节文字章节文字
+
+\subsection{小节1}
+小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1
+
+小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1
+
+小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1
+
+小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1小节1
+
+\begin{table}[htbp]
+    \centering
+    \caption{表题：标题文字标题文字}
+    \label{tab:example1}
+    \begin{tabular}{l c c c c}
+        \toprule
+        表头 & 表头 & 表头 & 表头 & 表头 \\
+        \midrule
+        文献1  & 100 & 0.83 & 0.84 & 0000 \\
+        文献2  & 540 & 0.96 & 0.54 & 5222 \\
+        文献3  & 15 & 0784 & 8484 & 7777 \\
+        文献4  & 147 & 0382 & 9104 & 8888 \\
+        本文   & 177 & 199 & 1.115 & 4564 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{小节2}
+小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2
+
+小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2
+
+小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2小节2
+
+
+\subsection{小节3}
+小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3
+
+小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3
+
+小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3小节3
+
+
+\section{总结与展望}
+
+\subsection{全文工作总结}
+全文工作总结全文工作总结全文工作总结全文工作总结全文工作总结全文工作总结全文工作总结全文工作总结全文工作总结全文工作总结全文工作总结全文工作总结
+
+全文工作总结全文工作总结全文工作总结全文工作总结全文工作总结全文工作总结全文工作总结全文工作总结全文工作总结全文工作总结全文工作总结全文工作总结
+
+全文工作总结全文工作总结全文工作总结全文工作总结全文工作总结全文工作总结全文工作总结全文工作总结全文工作总结全文工作总结全文工作总结全文工作总结
+
+
+\subsection{未来展望}
+未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望
+
+未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望
+
+未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望未来展望
+
+% --------------------参考文献--------------------
+\clearpage
+\phantomsection
+\addcontentsline{toc}{section}{参考文献}
+\centerline{\zihao{4}\heiti 参\hspace{1em}考\hspace{1em}文\hspace{1em}献}
+\vspace{1em}
+
+% 重新定义参考文献环境：取消数字编号，设置悬挂缩进
+\makeatletter
+\renewcommand{\@biblabel}[1]{} % 取消方括号和数字编号
+\renewenvironment{thebibliography}[1]
+     {\list{}{\usecounter{enumiv}
+              \setlength{\labelwidth}{0pt}
+              \setlength{\leftmargin}{2em}    % 整体向右缩进（第二行及之后的缩进量）
+              \setlength{\itemindent}{-2em}   % 首行反向缩进，形成悬挂效果
+              \setlength{\labelsep}{0pt}      
+              \setlength{\itemsep}{0ex}       % 条目之间的垂直间距
+              \setlength{\parsep}{0pt}}
+      \sloppy
+      \clubpenalty4000
+      \widowpenalty4000}
+     {\endlist}
+\makeatother
+
+{\zihao{-4}\songti\rmfamily
+\begin{thebibliography}{0}
+\vspace{-1.7em}
+
+\bibitem{Boyd1994} Boyd S, El Ghaoui L, Feron E, et al. Linear matrix inequalities in system and control theory[M]. Philadelphia: SIAM, 1994.
+
+\bibitem{Chen2008} Chen W H, Zheng W X. Improved delay-dependent asymptotic stability criteria for delayed neural networks[J]. IEEE Trans Neural Netw, 2008, 19(12): 2154-2161.
+
+\bibitem{Dai2011} Dai X, Huang Y, Xiao M. Periodically switched stability induces exponential stability of discrete-time linear switched systems in the sense of Markovian probabilities[J]. Automatica, 2011, 47(7): 1512-1519.
+
+\bibitem{Fridman2014} Fridman E. Tutorial on Lyapunov-based methods for time-delay systems[J]. European Journal of Control, 2014, 20: 271-283.
+
+\bibitem{Gu2003} Gu K, Kharitonov V.L., Chen J. Stability of time-delay systems[M]. Boston: Birkhauser, 2003.
+
+\end{thebibliography}
+}
+
+% --------------------致谢--------------------
+\clearpage
+\phantomsection
+\addcontentsline{toc}{section}{致谢}
+\centerline{\zihao{4}\heiti 致\hspace{4em}谢}
+\vspace{1em}
+{\zihao{-4}\songti
+笔者要感谢某某某老师。笔者要感谢某某某老师。笔者要感谢某某某老师。笔者要感谢某某某老师。笔者要感谢某某某老师。笔者要感谢某某某老师。笔者要感谢某某某老师。笔者要感谢某某某老师。笔者要感谢某某某老师。笔者要感谢某某某老师。
+
+笔者还要感谢某某某同学。笔者还要感谢某某某同学。笔者还要感谢某某某同学。笔者还要感谢某某某同学。笔者还要感谢某某某同学。笔者还要感谢某某某同学。笔者还要感谢某某某同学。笔者还要感谢某某某同学。笔者还要感谢某某某同学。笔者还要感谢某某某同学。笔者还要感谢某某某同学。笔者还要感谢某某某同学。笔者还要感谢某某某同学。笔者还要感谢某某某同学。笔者还要感谢某某某同学。
+}
+
+% --------------------成绩评定表--------------------
+\clearpage
+\thispagestyle{empty}
+\vspace{1em}
+
+\begin{center}
+    {\zihao{3}\heiti 华南农业大学本科毕业论文评分参考标准}
+\end{center}
+
+{\zihao{5}\songti
+\linespread{1}\selectfont 
+\renewcommand{\arraystretch}{1.6} 
+\renewcommand{\tabularxcolumn}[1]{m{#1}} 
+
+\noindent 
+\begin{tabularx}{\textwidth}{|m{2.2cm}<{\centering}|X|m{1.2cm}<{\centering}|}
+    \hline
+    \textbf{评价项目} & \multicolumn{1}{c|}{\textbf{评价指标}} & \textbf{分值} \\
+    \hline
+    \multicolumn{3}{|c|}{\textbf{指导教师评阅}} \\
+    \hline
+    学习态度\newline 与工作量 & 学习态度认真，工作作风严谨务实；工作量饱满，按期圆满完成规定的任务。 &  \\
+    \hline
+    资料收集\newline 与分析 & 具有一定的查阅、整理、分析中外文文献的能力；能较好理解课题任务并提出实施方案；查阅文献有一定广泛性，资料收集充分。 &  \\
+    \hline
+    研究水平\newline 与能力 & 能熟练掌握和运用所学专业基本理论、基本知识和基本技能分析解决相关理论和实际问题；论点鲜明，论据充分；实验设计合理，数据准确可靠，理论分析与计算正确；具有从事科学研究工作或专门技术工作的初步能力。 &  \\
+    \hline
+    论文撰写\newline 质\qquad 量 & 论文结构严谨，逻辑性强，层次清晰，技术用语准确；行文流畅，语句通顺；论文格式符合规范要求。 &  \\
+    \hline
+    学术水平\newline 与创新 & 具有一定的学术水平或实践应用价值；对与课题相关的理论或实际问题有较深刻的认识，有新的见解，有一定的创新。 &  \\
+    \hline
+    
+    \multicolumn{3}{|c|}{\textbf{评阅教师评阅}} \\
+    \hline
+    选 题 质 量 & 选题符合专业培养目标要求；与科学研究、生产实际或社会实践问题紧密结合；工作量饱满，难度适中，综合训练强。 &  \\
+    \hline
+    资料收集\newline 与分析 & 具有一定的查阅、整理、分析中外文文献的能力；能较好理解课题任务并提出实施方案；查阅文献有一定广泛性，资料收集充分。 &  \\
+    \hline
+    研究水平\newline 与能力 & 能熟练掌握和运用所学专业基本理论、基本知识和基本技能分析解决相关理论和实际问题；论点鲜明，论据充分；实验设计合理，数据准确可靠，理论分析与计算正确；具有从事科学研究工作或专门技术工作的初步能力。 &  \\
+    \hline
+    论文撰写\newline 质\qquad 量 & 论文结构严谨，逻辑性强，层次清晰，技术用语准确；行文流畅，语句通顺；论文格式符合规范要求。 &  \\
+    \hline
+    学术水平\newline 与创新 & 具有一定的学术水平或实践应用价值；对与课题相关的理论或实际问题有较深刻的认识，有新的见解，有一定的创新。 &  \\
+    \hline
+    
+    \multicolumn{3}{|c|}{\textbf{答辩小组评阅}} \\
+    \hline
+    选 题 质 量 & 选题符合专业培养目标要求；与科学研究、生产实际或社会实践问题紧密结合；工作量饱满，难度适中，综合训练强。 &  \\
+    \hline
+    研究水平\newline 与能力 & 能熟练掌握和运用所学专业基本理论、基本知识和基本技能分析解决相关理论和实际问题；论点鲜明，论据充分；实验设计合理，数据准确可靠，理论分析与计算正确；具有从事科学研究工作或专门技术工作的初步能力。 &  \\
+    \hline
+    论文撰写\newline 质\qquad 量 & 论文结构严谨，逻辑性强，层次清晰，技术用语准确；行文流畅，语句通顺；论文格式符合规范要求。 &  \\
+    \hline
+    学术水平\newline 与创新 & 具有一定的学术水平或实践应用价值；对与课题相关的理论或实际问题有较深刻的认识，有新的见解，有一定的创新。 &  \\
+    \hline
+    答\qquad 辩 & 能简明扼要阐述论文主要内容，思路清晰，语言表达准确、顺畅；回答问题有理论根据，基本概念清楚，逻辑性强，对主要问题回答准确、有深度。 &  \\
+    \hline
+\end{tabularx}
+\par}
+
+\end{document}
